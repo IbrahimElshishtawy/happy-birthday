@@ -8,6 +8,13 @@ export interface TimelineItem {
   image?: string;
 }
 
+// Dynamically import real images from src/assets/images
+const imageModules = import.meta.glob<{ default: string }>(
+  '/src/assets/images/*.{png,jpg,jpeg,webp,svg,PNG,JPG,JPEG}',
+  { eager: true }
+);
+const realTimelineImages = Object.values(imageModules).map((m) => m.default);
+
 export const timelineData: TimelineItem[] = [
   {
     id: 1,
@@ -16,6 +23,7 @@ export const timelineData: TimelineItem[] = [
     description: "The universe conspired to bring two souls together. That first meeting changed everything — little did we know it would be the beginning of something extraordinary.",
     emoji: "✨",
     color: "from-pink-400 to-rose-400",
+    image: realTimelineImages[0],
   },
   {
     id: 2,
@@ -24,6 +32,7 @@ export const timelineData: TimelineItem[] = [
     description: "We packed our bags, left worries behind, and explored the world together. Every step felt like magic when shared with you.",
     emoji: "🌍",
     color: "from-purple-400 to-pink-400",
+    image: realTimelineImages[1],
   },
   {
     id: 3,
@@ -32,6 +41,7 @@ export const timelineData: TimelineItem[] = [
     description: "Some days etch themselves into your memory forever. This was one of those days — perfect in every detail, perfect because you were there.",
     emoji: "💫",
     color: "from-amber-400 to-pink-400",
+    image: realTimelineImages[2],
   },
   {
     id: 4,
@@ -40,6 +50,7 @@ export const timelineData: TimelineItem[] = [
     description: "Life isn't always easy, but having you beside me made every hard day worth fighting through. Your strength inspires me every single day.",
     emoji: "💪",
     color: "from-rose-400 to-purple-400",
+    image: realTimelineImages[3],
   },
   {
     id: 5,
@@ -48,6 +59,7 @@ export const timelineData: TimelineItem[] = [
     description: "Every achievement, big or small, becomes sweeter when celebrated with someone who believes in you completely. Thank you for always being my biggest cheerleader.",
     emoji: "🏆",
     color: "from-pink-400 to-amber-400",
+    image: realTimelineImages[4],
   },
   {
     id: 6,
@@ -56,5 +68,6 @@ export const timelineData: TimelineItem[] = [
     description: "Here we are, celebrating YOU — the most wonderful person I know. This day belongs to you, Rola. Happy Birthday, darling! 💕",
     emoji: "🎂",
     color: "from-primary to-secondary",
+    image: realTimelineImages[5],
   },
 ];

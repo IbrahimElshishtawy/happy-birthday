@@ -44,6 +44,19 @@ const TimelineCard: React.FC<{ item: typeof timelineData[0]; index: number; isLe
           {/* Description */}
           <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
 
+          {/* Image if available */}
+          {item.image && (
+            <div className="relative rounded-2xl overflow-hidden mb-4 shadow-md group-hover:shadow-lg transition-shadow">
+              <img
+                src={item.image}
+                alt={item.title}
+                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+            </div>
+          )}
+
           {/* Bottom decoration */}
           <div className="mt-4 flex items-center gap-2">
             <div className={`h-0.5 flex-1 bg-gradient-to-r ${item.color} opacity-30 rounded-full`} />

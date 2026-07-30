@@ -5,6 +5,7 @@ import { ChevronDown, Sparkles, Gift } from 'lucide-react';
 import FloatingHearts from '@/components/FloatingHearts/FloatingHearts';
 import Confetti from '@/components/Confetti/Confetti';
 import { randomBetween, randomInt } from '@/utils/helpers';
+import heroVideo from '@/assets/videos/video_2026-07-30_16-35-54.mp4';
 
 const BALLOONS = [
   { color: '#FF5FA2', size: 120, x: '8%', y: '15%', delay: 0, duration: 7 },
@@ -104,10 +105,20 @@ const Hero: React.FC = () => {
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
       {/* Animated Background */}
-      <div className="absolute inset-0 z-0">
-        {/* Sky gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#2D1B6B] via-[#6B2D8B] to-[#FF5FA2] opacity-90" />
-        
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {/* Background Video */}
+        <video
+          src={heroVideo}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover scale-105 filter brightness-75"
+        />
+
+        {/* Gradient Overlay for high readability & luxury aesthetic */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#2D1B6B]/80 via-[#6B2D8B]/65 to-[#FF5FA2]/80 backdrop-blur-[2px]" />
+
         {/* City lights layer */}
         <div className="absolute bottom-0 left-0 right-0 h-1/3">
           {Array.from({ length: 20 }).map((_, i) => (
