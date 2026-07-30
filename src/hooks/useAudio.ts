@@ -19,24 +19,6 @@ export const DEFAULT_TRACKS: Track[] = [
     src: aichaAudio,
     initialTime: 283, // 4:43 start time
   },
-  {
-    id: 2,
-    title: "A Thousand Years",
-    artist: "Christina Perri",
-    src: "",
-  },
-  {
-    id: 3,
-    title: "Perfect",
-    artist: "Ed Sheeran",
-    src: "",
-  },
-  {
-    id: 4,
-    title: "You Are My Sunshine",
-    artist: "Classic",
-    src: "",
-  },
 ];
 
 export function useAudio(tracks: Track[] = DEFAULT_TRACKS) {

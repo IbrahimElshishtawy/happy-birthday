@@ -107,18 +107,23 @@ const Footer: React.FC = () => {
           <div className="flex-1 h-px bg-white/10" />
         </div>
 
-        {/* Copyright */}
-        <p className="text-white/30 text-xs">
-          Made with{' '}
-          <motion.span
-            animate={{ scale: [1, 1.3, 1] }}
-            transition={{ duration: 1, repeat: Infinity }}
-            className="inline-block text-primary"
-          >
-            ❤️
-          </motion.span>{' '}
-          for Rola • {new Date().getFullYear()}
-        </p>
+        {/* Credit */}
+        <div className="space-y-2">
+          <p className="text-white/70 text-sm font-medium">
+            صُنع بواسطة <span className="text-pink-300 font-bold">CoVantage SR IR</span> 💕
+          </p>
+          <p className="text-white/40 text-xs">
+            Made with{' '}
+            <motion.span
+              animate={{ scale: [1, 1.3, 1] }}
+              transition={{ duration: 1, repeat: Infinity }}
+              className="inline-block text-primary"
+            >
+              ❤️
+            </motion.span>{' '}
+            for Rola • {new Date().getFullYear()}
+          </p>
+        </div>
       </div>
     </footer>
   );
