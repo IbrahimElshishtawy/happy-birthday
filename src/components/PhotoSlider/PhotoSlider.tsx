@@ -180,16 +180,16 @@ const PhotoSlider: React.FC = () => {
                   >
                     <motion.div
                       className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary to-secondary rounded-full"
-                      style={{ width: `${demoProgress}%` }}
+                      style={{ width: `${progressPercent}%` }}
                     />
                     <div
                       className="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-white shadow-lg"
-                      style={{ left: `${demoProgress}%`, transform: 'translate(-50%, -50%)' }}
+                      style={{ left: `${progressPercent}%`, transform: 'translate(-50%, -50%)' }}
                     />
                   </div>
                   <div className="flex justify-between mt-1">
-                    <span className="text-white/40 text-xs font-mono">1:45</span>
-                    <span className="text-white/40 text-xs font-mono">4:23</span>
+                    <span className="text-white/40 text-xs font-mono">{formatTime(audio.currentTime)}</span>
+                    <span className="text-white/40 text-xs font-mono">{formatTime(audio.duration || 0)}</span>
                   </div>
                 </div>
 
@@ -260,7 +260,7 @@ const PhotoSlider: React.FC = () => {
         >
           <div className="p-4">
             <h4 className="text-white/50 text-xs uppercase tracking-widest font-semibold mb-3 px-2">Playlist</h4>
-            {PLAYLIST.map((track, i) => (
+            {audio.tracks.map((track, i) => (
               <motion.button
                 key={track.id}
                 onClick={() => audio.selectTrack(i)}
