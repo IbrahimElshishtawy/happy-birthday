@@ -147,9 +147,6 @@ const Countdown: React.FC = () => {
           <h3 className="font-display text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
             Our Next Big Adventure Awaits! 🌍
           </h3>
-          <p className="font-script text-2xl sm:text-3xl text-primary mb-4 leading-relaxed">
-            أول ما أخلص الجيش.. هناخد شنطنا ونسافر نلف العالم سوا 🫡✈️
-          </p>
           <p className="text-gray-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
             من شواطئ المالديف الكريستالية 🏝️ لجبال سويسرا المغطاة بالتلوج 🏔️، لشوارع أمريكا وهاواي والأماكن الساحلية اللي بتحبيها 🌺.. أوعدك هنعيش أحيى مغامرات في حياتنا سوا 💕
           </p>

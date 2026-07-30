@@ -9,5 +9,5 @@ export default defineConfig({
       '@': resolve(__dirname, './src'),
     },
   },
-  assetsInclude: ['**/*.mp3', '**/*.wav', '**/*.ogg'],
+  assetsInclude: ['**/*.mp3', '**/*.m4a', '**/*.wav', '**/*.ogg', '**/*.aac'],
 })

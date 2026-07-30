@@ -156,7 +156,7 @@ const FinalLetter: React.FC = () => {
                   transition={{ duration: 3, repeat: Infinity }}
                 >
                   <p className="font-script text-4xl sm:text-5xl text-white font-bold drop-shadow-lg">
-                    I Love You, Rola
+                   H.B.D Yaaa RORO 🎂
                   </p>
                   <div className="h-0.5 bg-gradient-to-r from-transparent via-pink-300 to-transparent mt-2" />
                 </motion.div>
