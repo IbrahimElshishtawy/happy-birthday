@@ -4,22 +4,14 @@ import {
   Play, Pause, SkipBack, SkipForward,
   Volume2, VolumeX, Repeat, Music2, ChevronUp, ChevronDown, List
 } from 'lucide-react';
-import { useAudio, type Track } from '@/hooks/useAudio';
+import { useAudio, DEFAULT_TRACKS, type Track } from '@/hooks/useAudio';
 import { formatTime } from '@/utils/helpers';
 
 interface FloatingMusicPlayerProps {
   tracks?: Track[];
 }
 
-const defaultTracks: Track[] = [
-  { id: 1, title: 'Happy Birthday To You', artist: 'Classic', src: '' },
-  { id: 2, title: 'A Thousand Years', artist: 'Christina Perri', src: '' },
-  { id: 3, title: 'Perfect', artist: 'Ed Sheeran', src: '' },
-  { id: 4, title: 'You Are My Sunshine', artist: 'Classic', src: '' },
-  { id: 5, title: 'Count on Me', artist: 'Bruno Mars', src: '' },
-];
-
-const FloatingMusicPlayer: React.FC<FloatingMusicPlayerProps> = ({ tracks = defaultTracks }) => {
+const FloatingMusicPlayer: React.FC<FloatingMusicPlayerProps> = ({ tracks = DEFAULT_TRACKS }) => {
   const audio = useAudio(tracks);
   const [expanded, setExpanded] = useState(false);
   const [showPlaylist, setShowPlaylist] = useState(false);
