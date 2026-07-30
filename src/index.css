@@ -131,8 +131,8 @@
 
   .bg-glass {
     background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.5);
   }
 
@@ -293,6 +293,7 @@
   border-radius: 50%;
   width: 44px !important;
   height: 44px !important;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 .swiper-button-next::after,

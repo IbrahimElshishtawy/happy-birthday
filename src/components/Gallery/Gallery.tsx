@@ -30,24 +30,24 @@ const PHOTO_LABELS = [
 ];
 
 // Generate SVG placeholder images
-const generatePlaceholderSvg = (color1: string, color2: string, emoji: string, label: string, index: number): string => {
+const generatePlaceholderSvg = (color1: string, color2: string, _emoji: string, label: string, index: number): string => {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">
     <defs>
       <linearGradient id="g${index}" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" style="stop-color:${color1};stop-opacity:1"/>
         <stop offset="100%" style="stop-color:${color2};stop-opacity:1"/>
       </linearGradient>
-      <filter id="blur${index}"><feGaussianBlur stdDeviation="2"/></filter>
     </defs>
     <rect width="400" height="500" fill="url(#g${index})"/>
     <circle cx="200" cy="180" r="80" fill="rgba(255,255,255,0.15)"/>
     <circle cx="320" cy="80" r="50" fill="rgba(255,255,255,0.1)"/>
     <circle cx="80" cy="380" r="60" fill="rgba(255,255,255,0.1)"/>
-    <text x="200" y="200" text-anchor="middle" font-size="60" fill="white" opacity="0.9">${emoji}</text>
     <text x="200" y="320" text-anchor="middle" font-size="18" font-family="Georgia,serif" fill="white" font-weight="bold" opacity="0.9">${label}</text>
-    <text x="200" y="350" text-anchor="middle" font-size="14" font-family="Arial" fill="rgba(255,255,255,0.7)">Rola 💕</text>
+    <text x="200" y="350" text-anchor="middle" font-size="14" font-family="Arial" fill="rgba(255,255,255,0.7)">Rola</text>
   </svg>`;
-  return `data:image/svg+xml;base64,${btoa(svg)}`;
+  // Safe UTF-8 base64 encoding
+  const encoded = btoa(unescape(encodeURIComponent(svg)));
+  return `data:image/svg+xml;base64,${encoded}`;
 };
 
 interface Photo {

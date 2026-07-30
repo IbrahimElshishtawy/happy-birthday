@@ -291,7 +291,7 @@ const Hero: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 1.2, ease: 'back.out(1.7)' }}
+          transition={{ duration: 0.8, delay: 1.2, ease: [0.34, 1.56, 0.64, 1] }}
           className="flex flex-col sm:flex-row gap-4 items-center justify-center"
         >
           <motion.button
