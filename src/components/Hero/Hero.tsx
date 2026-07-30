@@ -6,6 +6,7 @@ import FloatingHearts from '@/components/FloatingHearts/FloatingHearts';
 import Confetti from '@/components/Confetti/Confetti';
 import { randomBetween, randomInt } from '@/utils/helpers';
 import heroVideo from '@/assets/videos/video_2026-07-30_16-35-54.mp4';
+import { startGlobalAudioAt443 } from '@/hooks/useAudio';
 
 const BALLOONS = [
   { color: '#FF5FA2', size: 120, x: '8%', y: '15%', delay: 0, duration: 7 },
@@ -88,6 +89,7 @@ const Hero: React.FC = () => {
   }, []);
 
   const handleStart = () => {
+    startGlobalAudioAt443();
     setStarted(true);
     setShowConfetti(true);
     setTimeout(() => setShowConfetti(false), 5000);
@@ -291,10 +293,10 @@ const Hero: React.FC = () => {
           className="mb-8"
         >
           <p className="font-script text-2xl md:text-3xl text-pink-200 mb-2 drop-shadow">
-            كل سنة وانتي أجمل ما في حياتي 💕
+كل سنة وانتي أجمل ما في حياة 💕
           </p>
-          <p className="text-white/90 text-sm md:text-base max-w-lg mx-auto font-medium">
-            أول ما أخلص الجيش.. هنلف العالم سوا ونسافر المالديف وسويسرا وهاواي ✈️🏝️
+          <p className="font-script text-2xl md:text-3xl text-pink-200 mb-2 drop-shadow">
+          الكون اتكون فيه نجمة و مش اي نجمه نجمه  ب عيونه و قلبها و ضحكتها و اسمه رولا  
           </p>
         </motion.div>
 
