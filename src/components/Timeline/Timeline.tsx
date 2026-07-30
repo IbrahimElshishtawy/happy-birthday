@@ -46,14 +46,14 @@ const TimelineCard: React.FC<{ item: typeof timelineData[0]; index: number; isLe
 
           {/* Image if available */}
           {item.image && (
-            <div className="relative rounded-2xl overflow-hidden my-4 shadow-md group-hover:shadow-xl transition-all duration-500">
+            <div className="relative rounded-2xl overflow-hidden my-4 shadow-lg group-hover:shadow-2xl transition-all duration-500 bg-black/5 flex items-center justify-center">
               <img
                 src={item.image}
                 alt={item.title}
-                className="w-full h-64 sm:h-72 md:h-80 object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                className="w-full h-auto max-h-[480px] object-cover sm:object-contain rounded-2xl group-hover:scale-102 transition-transform duration-700"
                 loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none rounded-2xl" />
             </div>
           )}
 
