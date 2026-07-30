@@ -21,192 +21,231 @@ export const DEFAULT_TRACKS: Track[] = [
   },
 ];
 
-export function useAudio(tracks: Track[] = DEFAULT_TRACKS) {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const [currentTime, setCurrentTime] = useState(283); // default at 4:43 for Aicha
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolumeState] = useState(0.8);
-  const [isLoop, setIsLoop] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
-  const [analyserData, setAnalyserData] = useState<number[]>(Array(32).fill(0));
-  const hasInitializedStartTime = useRef(false);
+// Single global HTMLAudioElement instance shared across the entire app
+let globalAudio: HTMLAudioElement | null = null;
+let globalHasInitializedStartTime = false;
 
-  const currentTrack = tracks[currentTrackIndex] || tracks[0];
+// Global state listeners
+const listeners = new Set<() => void>();
 
-  // Initialize audio element
-  useEffect(() => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio();
-    }
-    const audio = audioRef.current;
-    audio.volume = volume;
-    audio.loop = isLoop;
+function notifyListeners() {
+  listeners.forEach((listener) => listener());
+}
 
-    if (currentTrack.src && audio.src !== currentTrack.src) {
-      audio.src = currentTrack.src;
-      audio.load();
-      hasInitializedStartTime.current = false;
-    }
+// Global state variables
+let globalIsPlaying = false;
+let globalCurrentTrackIndex = 0;
+let globalCurrentTime = 283;
+let globalDuration = 0;
+let globalVolume = 0.8;
+let globalIsLoop = true;
+let globalIsMuted = false;
 
-    const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
-    const handleLoadedMetadata = () => {
-      setDuration(audio.duration);
-      if (!hasInitializedStartTime.current && currentTrack.initialTime) {
-        audio.currentTime = currentTrack.initialTime;
-        setCurrentTime(currentTrack.initialTime);
-        hasInitializedStartTime.current = true;
+function getGlobalAudio(): HTMLAudioElement {
+  if (!globalAudio) {
+    globalAudio = new Audio(DEFAULT_TRACKS[0].src);
+    globalAudio.volume = globalVolume;
+    globalAudio.loop = globalIsLoop;
+
+    globalAudio.addEventListener('timeupdate', () => {
+      if (globalAudio) {
+        globalCurrentTime = globalAudio.currentTime;
+        notifyListeners();
       }
-    };
-    const handleEnded = () => {
-      if (!isLoop) handleNext();
-    };
+    });
 
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-    audio.addEventListener('ended', handleEnded);
+    globalAudio.addEventListener('loadedmetadata', () => {
+      if (globalAudio) {
+        globalDuration = globalAudio.duration;
+        if (!globalHasInitializedStartTime && DEFAULT_TRACKS[0].initialTime) {
+          globalAudio.currentTime = DEFAULT_TRACKS[0].initialTime;
+          globalCurrentTime = DEFAULT_TRACKS[0].initialTime;
+          globalHasInitializedStartTime = true;
+        }
+        notifyListeners();
+      }
+    });
 
-    return () => {
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      audio.removeEventListener('ended', handleEnded);
-    };
-  }, [currentTrack.src, isLoop]);
+    globalAudio.addEventListener('play', () => {
+      globalIsPlaying = true;
+      notifyListeners();
+    });
 
-  // Visualizer simulation
+    globalAudio.addEventListener('pause', () => {
+      globalIsPlaying = false;
+      notifyListeners();
+    });
+
+    globalAudio.addEventListener('ended', () => {
+      globalIsPlaying = false;
+      notifyListeners();
+    });
+  }
+  return globalAudio;
+}
+
+export function startGlobalAudioAt443() {
+  const audio = getGlobalAudio();
+  if (!globalHasInitializedStartTime && DEFAULT_TRACKS[0].initialTime) {
+    audio.currentTime = DEFAULT_TRACKS[0].initialTime;
+    globalCurrentTime = DEFAULT_TRACKS[0].initialTime;
+    globalHasInitializedStartTime = true;
+  }
+  audio
+    .play()
+    .then(() => {
+      globalIsPlaying = true;
+      notifyListeners();
+    })
+    .catch((err) => {
+      console.log('Autoplay deferred until user interaction:', err);
+    });
+}
+
+// Auto-trigger on page load and any user interaction
+if (typeof window !== 'undefined') {
+  const attemptAutoplay = () => {
+    startGlobalAudioAt443();
+  };
+
+  // Attempt immediately on module load
+  setTimeout(attemptAutoplay, 100);
+
+  // Attach global event listeners for instant start on any user gesture
+  const events = ['click', 'touchstart', 'mousedown', 'keydown', 'scroll', 'mousemove', 'pointerdown'];
+  const handleGesture = () => {
+    attemptAutoplay();
+    events.forEach((evt) => window.removeEventListener(evt, handleGesture));
+  };
+
+  events.forEach((evt) => window.addEventListener(evt, handleGesture, { once: true }));
+}
+
+export function useAudio(tracks: Track[] = DEFAULT_TRACKS) {
+  const [, setTick] = useState(0);
+
   useEffect(() => {
-    let interval: ReturnType<typeof setInterval>;
-    if (isPlaying) {
-      interval = setInterval(() => {
-        setAnalyserData(Array.from({ length: 32 }, () => Math.random() * 100));
-      }, 100);
-    } else {
-      setAnalyserData(Array(32).fill(0));
-    }
-    return () => clearInterval(interval);
-  }, [isPlaying]);
+    const update = () => setTick((t) => t + 1);
+    listeners.add(update);
+    return () => {
+      listeners.delete(update);
+    };
+  }, []);
+
+  // Ensure audio is initialized
+  useEffect(() => {
+    getGlobalAudio();
+  }, []);
 
   const play = useCallback(async () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (currentTrack.src) {
-      if (!hasInitializedStartTime.current && currentTrack.initialTime) {
-        audio.currentTime = currentTrack.initialTime;
-        setCurrentTime(currentTrack.initialTime);
-        hasInitializedStartTime.current = true;
-      }
-      try {
-        await audio.play();
-        setIsPlaying(true);
-      } catch (e) {
-        console.log('Autoplay blocked by browser:', e);
-      }
-    } else {
-      // Fallback for empty tracks
-      setIsPlaying(true);
-    }
-  }, [currentTrack]);
+    startGlobalAudioAt443();
+  }, []);
 
   const pause = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
+    if (globalAudio) {
+      globalAudio.pause();
+      globalIsPlaying = false;
+      notifyListeners();
     }
-    setIsPlaying(false);
   }, []);
 
   const toggle = useCallback(() => {
-    if (isPlaying) pause();
+    if (globalIsPlaying) pause();
     else play();
-  }, [isPlaying, play, pause]);
-
-  // Attempt autoplay on first user interaction anywhere on the page
-  useEffect(() => {
-    const handleFirstInteraction = () => {
-      if (!isPlaying && audioRef.current) {
-        play();
-      }
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('touchstart', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
-    };
-
-    window.addEventListener('click', handleFirstInteraction);
-    window.addEventListener('touchstart', handleFirstInteraction);
-    window.addEventListener('keydown', handleFirstInteraction);
-
-    return () => {
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('touchstart', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
-    };
-  }, [isPlaying, play]);
+  }, [play, pause]);
 
   const handleNext = useCallback(() => {
-    const nextIdx = (currentTrackIndex + 1) % tracks.length;
-    setCurrentTrackIndex(nextIdx);
-    hasInitializedStartTime.current = false;
-    setCurrentTime(tracks[nextIdx].initialTime || 0);
-  }, [currentTrackIndex, tracks]);
+    const nextIdx = (globalCurrentTrackIndex + 1) % tracks.length;
+    globalCurrentTrackIndex = nextIdx;
+    globalHasInitializedStartTime = false;
+    const targetTrack = tracks[nextIdx] || tracks[0];
+    if (globalAudio && targetTrack.src) {
+      globalAudio.src = targetTrack.src;
+      if (targetTrack.initialTime) {
+        globalAudio.currentTime = targetTrack.initialTime;
+        globalCurrentTime = targetTrack.initialTime;
+      }
+      globalAudio.play().catch(() => {});
+    }
+    notifyListeners();
+  }, [tracks]);
 
   const handlePrev = useCallback(() => {
-    const prevIdx = (currentTrackIndex - 1 + tracks.length) % tracks.length;
-    setCurrentTrackIndex(prevIdx);
-    hasInitializedStartTime.current = false;
-    setCurrentTime(tracks[prevIdx].initialTime || 0);
-  }, [currentTrackIndex, tracks]);
+    const prevIdx = (globalCurrentTrackIndex - 1 + tracks.length) % tracks.length;
+    globalCurrentTrackIndex = prevIdx;
+    globalHasInitializedStartTime = false;
+    const targetTrack = tracks[prevIdx] || tracks[0];
+    if (globalAudio && targetTrack.src) {
+      globalAudio.src = targetTrack.src;
+      if (targetTrack.initialTime) {
+        globalAudio.currentTime = targetTrack.initialTime;
+        globalCurrentTime = targetTrack.initialTime;
+      }
+      globalAudio.play().catch(() => {});
+    }
+    notifyListeners();
+  }, [tracks]);
 
   const seek = useCallback((time: number) => {
-    if (audioRef.current) audioRef.current.currentTime = time;
-    setCurrentTime(time);
+    if (globalAudio) {
+      globalAudio.currentTime = time;
+      globalCurrentTime = time;
+      notifyListeners();
+    }
   }, []);
 
   const setVolume = useCallback((v: number) => {
-    setVolumeState(v);
-    if (audioRef.current) audioRef.current.volume = v;
+    globalVolume = v;
+    if (globalAudio) globalAudio.volume = v;
+    notifyListeners();
   }, []);
 
   const toggleMute = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-    }
-    setIsMuted((m) => !m);
-  }, [isMuted]);
+    globalIsMuted = !globalIsMuted;
+    if (globalAudio) globalAudio.muted = globalIsMuted;
+    notifyListeners();
+  }, []);
 
   const toggleLoop = useCallback(() => {
-    setIsLoop((l) => !l);
-    if (audioRef.current) audioRef.current.loop = !isLoop;
-  }, [isLoop]);
+    globalIsLoop = !globalIsLoop;
+    if (globalAudio) globalAudio.loop = globalIsLoop;
+    notifyListeners();
+  }, []);
 
   const selectTrack = useCallback(
     (index: number) => {
-      setCurrentTrackIndex(index);
-      hasInitializedStartTime.current = false;
-      const targetTrack = tracks[index];
-      setCurrentTime(targetTrack.initialTime || 0);
-      if (audioRef.current && targetTrack.src) {
-        audioRef.current.src = targetTrack.src;
+      globalCurrentTrackIndex = index;
+      globalHasInitializedStartTime = false;
+      const targetTrack = tracks[index] || tracks[0];
+      if (globalAudio && targetTrack.src) {
+        globalAudio.src = targetTrack.src;
         if (targetTrack.initialTime) {
-          audioRef.current.currentTime = targetTrack.initialTime;
+          globalAudio.currentTime = targetTrack.initialTime;
+          globalCurrentTime = targetTrack.initialTime;
         }
-        audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+        globalAudio.play().then(() => {
+          globalIsPlaying = true;
+          notifyListeners();
+        }).catch(() => {});
       }
+      notifyListeners();
     },
     [tracks]
   );
 
+  const currentTrack = tracks[globalCurrentTrackIndex] || tracks[0] || DEFAULT_TRACKS[0];
+
   return {
-    isPlaying,
+    isPlaying: globalIsPlaying,
     currentTrack,
-    currentTrackIndex,
+    currentTrackIndex: globalCurrentTrackIndex,
     tracks,
-    currentTime,
-    duration,
-    volume,
-    isLoop,
-    isMuted,
-    analyserData,
+    currentTime: globalCurrentTime,
+    duration: globalDuration,
+    volume: globalVolume,
+    isLoop: globalIsLoop,
+    isMuted: globalIsMuted,
+    analyserData: globalIsPlaying ? Array.from({ length: 32 }, () => Math.random() * 100) : Array(32).fill(0),
     play,
     pause,
     toggle,
