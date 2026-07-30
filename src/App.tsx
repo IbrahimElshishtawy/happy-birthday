@@ -143,6 +143,9 @@ const App: React.FC = () => {
 
         {/* Floating Music Player (always visible) */}
         <FloatingMusicPlayer />
+
+        {/* Welcome Modal Popup on page load */}
+        <WelcomeModal />
       </motion.div>
     </AnimatePresence>
   );
