@@ -229,7 +229,7 @@ const Hero: React.FC = () => {
           className="mb-4"
         >
           <span className="font-script text-2xl md:text-3xl text-amber-300 drop-shadow-lg tracking-wider">
-            ✨ Happy Birthday ✨
+            ✨ Happy Birthday Rola • 08 / 08 / 2001 ✨
           </span>
         </motion.div>
 
@@ -288,13 +288,13 @@ const Hero: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="mb-10"
+          className="mb-8"
         >
-          <p className="font-script text-xl sm:text-2xl md:text-3xl text-white/90 drop-shadow-lg mb-2">
-            كل سنة وانتي أجمل ما في حياتي
+          <p className="font-script text-2xl md:text-3xl text-pink-200 mb-2 drop-shadow">
+            كل سنة وانتي أجمل ما في حياتي 💕
           </p>
-          <p className="font-body text-sm sm:text-base text-white/70 max-w-md mx-auto">
-            A magical birthday journey crafted with love, just for you 💝
+          <p className="text-white/90 text-sm md:text-base max-w-lg mx-auto font-medium">
+            أول ما أخلص الجيش.. هنلف العالم سوا ونسافر المالديف وسويسرا وهاواي ✈️🏝️
           </p>
         </motion.div>
 
