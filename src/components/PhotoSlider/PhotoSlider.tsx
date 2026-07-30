@@ -2,25 +2,13 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Play, Pause, SkipBack, SkipForward, Volume2, Repeat, Music } from 'lucide-react';
-import { useAudio, type Track } from '@/hooks/useAudio';
+import { useAudio, DEFAULT_TRACKS } from '@/hooks/useAudio';
 import { formatTime } from '@/utils/helpers';
 
-const PLAYLIST: Track[] = [
-  { id: 1, title: 'Happy Birthday To You', artist: 'Birthday Classic', src: '' },
-  { id: 2, title: 'A Thousand Years', artist: 'Christina Perri', src: '' },
-  { id: 3, title: 'Perfect', artist: 'Ed Sheeran', src: '' },
-  { id: 4, title: 'You Are My Sunshine', artist: 'Classic', src: '' },
-  { id: 5, title: 'Count on Me', artist: 'Bruno Mars', src: '' },
-  { id: 6, title: 'Lucky', artist: 'Jason Mraz', src: '' },
-];
-
 const PhotoSlider: React.FC = () => {
-  const audio = useAudio(PLAYLIST);
+  const audio = useAudio(DEFAULT_TRACKS);
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
   const progressPercent = audio.duration > 0 ? (audio.currentTime / audio.duration) * 100 : 0;
-
-  // Simulate time for demo
-  const demoProgress = 35;
 
   return (
     <section id="music" className="py-24 px-4 relative overflow-hidden">
