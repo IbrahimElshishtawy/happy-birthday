@@ -18,6 +18,7 @@ import BirthdayCake from '@/components/BirthdayCake/BirthdayCake';
 import FinalLetter from '@/components/FinalLetter/FinalLetter';
 import Footer from '@/components/Footer/Footer';
 import FloatingMusicPlayer from '@/components/FloatingMusicPlayer/FloatingMusicPlayer';
+import WelcomeModal from '@/components/WelcomeModal/WelcomeModal';
 
 const App: React.FC = () => {
   // Custom cursor glow
